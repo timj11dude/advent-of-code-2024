@@ -1,7 +1,5 @@
 package day01
 
-import kotlin.math.abs
-
 object solution {
     val example1 = """3   4
 4   3
@@ -19,9 +17,9 @@ object solution {
                     first.toInt() to second.toInt()
                 }
         }
-        val firstList = parsed.map(Pair<Int, Int>::first).sorted()
-        val secondList = parsed.map(Pair<Int, Int>::second).sorted()
-        val result = firstList.zip(secondList) { f, s -> abs(f - s) }
+        val firstList = parsed.map(Pair<Int, Int>::first)
+        val secondList = parsed.map(Pair<Int, Int>::second).groupingBy { it }.eachCount()
+        val result = firstList.map { f -> f * (secondList[f] ?: 0) }
         return result.sum()
     }
 
