@@ -13,15 +13,16 @@ object solution {
     """.trimIndent()
 
     fun solve(input: List<String>): Int {
-        fun isReportSafe(report: String): Boolean {
-            return report.split(" ")
-                .map(String::toInt)
-                .let { levels ->
-                    val isAsc = levels.let { (first, second) -> first < second }
-                    levels.zipWithNext().all { (f, s) -> f < s == isAsc && abs(f-s) in 1..3 }
+        fun String.asReport(): Report = split(" ").map(String::toInt)
+        fun Report.isSafe(): Boolean {
+            fun check(report: Report): Boolean = report
+                .let { (first,second) -> first < second }
+                .let { isAsc -> report.zipWithNext().all { (f, s) -> f < s == isAsc && abs(f-s) in 1..3 } }
+            return if (check(this)) true else indices.any { index ->
+                    check(take(index) + drop(index + 1))
                 }
         }
-        return input.count(::isReportSafe)
+        return input.map(String::asReport).count(Report::isSafe)
     }
 
     @JvmStatic
@@ -30,3 +31,6 @@ object solution {
         println(solve(this::class.java.getResource("input").readText().split("\n")))
     }
 }
+
+typealias Level = Int
+typealias Report = List<Level>
