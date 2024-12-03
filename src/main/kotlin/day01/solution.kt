@@ -1,5 +1,7 @@
 package day01
 
+import utils.getPuzzleInput
+
 object solution {
     val example1 = """3   4
 4   3
@@ -26,6 +28,6 @@ object solution {
     @JvmStatic
     fun main(args: Array<String>) {
         println(solve(example1.split("\n")))
-        println(solve(this::class.java.getResource("input").readText().split("\n")))
+        println(solve(this.getPuzzleInput()))
     }
 }

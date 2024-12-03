@@ -1,5 +1,6 @@
 package day02
 
+import utils.getPuzzleInput
 import kotlin.math.abs
 
 object solution {
@@ -28,7 +29,7 @@ object solution {
     @JvmStatic
     fun main(args: Array<String>) {
         println(solve(example1.split("\n")))
-        println(solve(this::class.java.getResource("input").readText().split("\n")))
+        println(solve(this.getPuzzleInput()))
     }
 }
 
