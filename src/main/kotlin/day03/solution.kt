@@ -2,24 +2,35 @@ package day03
 
 import org.intellij.lang.annotations.Language
 import utils.getPuzzleInput
-import kotlin.math.abs
+import utils.getPuzzleInputWithoutSplit
 
 object solution {
-    val example1 = """
-        xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
+    private val example1 = """
+        xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
     """.trimIndent()
 
     @Language("RegExp")
-    val regexString = "mul\\((\\d+),(\\d+)\\)".toRegex()
-    fun solve(input: List<String>): Int {
-        return input.sumOf { line ->
-            regexString.findAll(line).sumOf { match -> match.groupValues[1].toInt() * match.groupValues[2].toInt() }
-        }
+    private const val mulRegex = "mul\\((\\d+),(\\d+)\\)"
+    private const val doRegex = "do\\(\\)"
+    private const val doNotRegex = "don't\\(\\)"
+    private val fullRegex = listOf(mulRegex, doRegex, doNotRegex).joinToString("|").toRegex()
+
+    private fun solve(input: String): Int {
+        return fullRegex.findAll(input).fold(true to 0) { (doMul, acc), match ->
+            when (match.value) {
+                "do()" -> (true to acc)
+                "don't()" -> (false to acc)
+                else -> when (doMul) {
+                    true -> (doMul to acc + (match.groupValues[1].toInt() * match.groupValues[2].toInt()))
+                    false -> (doMul to acc)
+                }
+            }
+        }.second
     }
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println(solve(example1.split("\n")))
-        println(solve(this.getPuzzleInput()))
+        println(solve(example1))
+        println(solve(this.getPuzzleInputWithoutSplit()))
     }
 }
