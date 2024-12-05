@@ -1,6 +1,7 @@
 package day05
 
 import utils.getPuzzleInput
+import utils.middle
 
 object solution {
     private val example1 = """
@@ -44,13 +45,14 @@ object solution {
     private fun solve(input: List<String>): Int {
         val (orderings, updates) = input.partition { it.contains("|") }
             .let { (f, s) -> f.parseOrderings() to s.parseInstructions() }
-        return updates.filter { update ->
-            update.withIndex().all { (index, instruction) ->
-                val ordering = orderings.getOrDefault(instruction, emptyList())
-                update.drop(index+1).none { it in ordering }
+        return updates.asSequence()
+            .filterNot { update ->
+                update.withIndex().all { (index, instruction) ->
+                    update.drop(index + 1).none { it in orderings.getOrDefault(instruction, emptyList()) }
+                }
             }
-        }
-            .sumOf { it[(it.size / 2)] }
+            .map { it.sortedWith { o1, o2 -> if (o2 in orderings.getOrDefault(o1, emptyList())) 1 else if(o1 in orderings.getOrDefault(o2, emptyList())) -1 else 0 } }
+            .sumOf(List<Int>::middle)
     }
 
     @JvmStatic
