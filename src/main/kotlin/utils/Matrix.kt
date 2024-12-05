@@ -27,6 +27,12 @@ fun <T> Matrix<T>.getIteratorWithVector(_x: Int, _y: Int, vector2D: Vector2D): I
     }
 }
 
-fun <T> Matrix<T>.associateView(x: Int, y: Int, view: List<Vector2D>) = view.associateWith { vector ->
+/**
+ * Associates each [view] item to the [T] in [this] Matrix
+ * @param T Matrix
+ * @param view Vectors relative to given [x] and [y] on which to retrieve value
+ * @return Map of input vectors to their corresponding value in this Matrix
+ */
+fun <T> Matrix<T>.associateView(x: Int, y: Int, view: List<Vector2D>): Map<Vector2D, T?> = view.associateWith { vector ->
     getOrNull(x+vector.x, y+vector.y)
 }

@@ -3,6 +3,9 @@ package utils
 data class Vector2D(val x: Int, val y: Int) {
 
     operator fun not() = Vector2D(-x, -y)
+    operator fun plus(other: Vector2D) = Vector2D(x + other.x, y + other.y)
+    operator fun minus(other: Vector2D) = Vector2D(x - other.x, y - other.y)
+    operator fun times(other: Vector2D) = Vector2D(x * other.x, y * other.y)
 
     companion object {
         object cardinal {
