@@ -1,6 +1,9 @@
 package utils
 
 data class Vector2D(val x: Int, val y: Int) {
+
+    operator fun not() = Vector2D(-x, -y)
+
     companion object {
         object cardinal {
             // Basic cardinal directions

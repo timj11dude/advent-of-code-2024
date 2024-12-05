@@ -26,3 +26,7 @@ fun <T> Matrix<T>.getIteratorWithVector(_x: Int, _y: Int, vector2D: Vector2D): I
         r = getOrNull(x,y)
     }
 }
+
+fun <T> Matrix<T>.associateView(x: Int, y: Int, view: List<Vector2D>) = view.associateWith { vector ->
+    getOrNull(x+vector.x, y+vector.y)
+}
