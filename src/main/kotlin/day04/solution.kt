@@ -25,7 +25,7 @@ MXMXAXMASX
 
     private fun solve(input: List<String>): Int {
         val matrix = Matrix(input.map(String::toCharArray).map(CharArray::toList))
-        return matrix.indicies
+        return matrix.indices
             .filter { (x,y) -> matrix.getOrNull(x,y) == 'A' }
             .count { (x, y) ->
                 allVectors.count { vectors ->

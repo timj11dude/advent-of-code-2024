@@ -1,6 +1,6 @@
 package utils
 
-fun Any.getPuzzleInput() = this::class.java.getResource("input").readText().split("\n")
+fun Any.getPuzzleInput() = this::class.java.getResource("input").readText().lines()
 fun Any.getPuzzleInputWithoutSplit() = this::class.java.getResource("input").readText()
 
 /**
