@@ -1,8 +1,7 @@
 package day03
 
 import org.intellij.lang.annotations.Language
-import utils.getPuzzleInput
-import utils.getPuzzleInputWithoutSplit
+import utils.getPuzzleInputRaw
 
 object solution {
     private val example1 = """
@@ -31,6 +30,6 @@ object solution {
     @JvmStatic
     fun main(args: Array<String>) {
         println(solve(example1))
-        println(solve(this.getPuzzleInputWithoutSplit()))
+        println(solve(this.getPuzzleInputRaw()))
     }
 }

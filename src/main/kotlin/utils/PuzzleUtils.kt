@@ -1,7 +1,7 @@
 package utils
 
 fun Any.getPuzzleInput() = this::class.java.getResource("input").readText().lines()
-fun Any.getPuzzleInputWithoutSplit() = this::class.java.getResource("input").readText()
+fun Any.getPuzzleInputRaw() = this::class.java.getResource("input").readText()
 
 /**
  * Get the middle entry of a list
