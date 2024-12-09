@@ -2,6 +2,14 @@ package utils
 
 fun Any.getPuzzleInput() = this::class.java.getResource("input").readText().lines()
 fun Any.getPuzzleInputRaw() = this::class.java.getResource("input").readText()
+fun Any.getPuzzleInputRawAsSequence(): Sequence<Char> = this::class.java.getResource("input").openStream().bufferedReader().let { bufferedReader ->
+    sequence {
+        do {
+            val n = bufferedReader.read()
+            yield(n.toChar())
+        } while (n != -1)
+    }
+}
 
 /**
  * Get the middle entry of a list
