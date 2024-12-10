@@ -4,6 +4,11 @@ import utils.*
 import utils.CoordinatesUtil.x
 import utils.CoordinatesUtil.y
 
+<<<<<<< HEAD
+=======
+typealias Route = List<Coordinates>
+
+>>>>>>> 228dcaf (day 10 part 1)
 object solution {
     private val example1 = """
         0123
@@ -27,19 +32,33 @@ object solution {
 
     private val cardinalDirections = Vector2D.Companion.cardinal.all
 
-    private fun <T> Matrix<T>.getNeighbours(coords: Coordinates) = cardinalDirections.mapNotNull { (x,y) -> this.getOrNull(coords.x + x, coords.y + y) }
-    private fun Matrix<Byte>.findALlPaths(start: Coordinates) {
-        // do some recursive search for a valid path
-        // terminate when no valid neighbor or END is found
-        // return paths or count which reached END
-        TODO()
+    private fun <T> Matrix<T>.getNeighbours(coords: Coordinates) = cardinalDirections
+        .map { (x,y) -> coords.x + x to coords.y + y }
+        .filter { (x,y) -> getOrNull(x, y) != null }
+    private fun Matrix<Byte>.isGoodNeighbour(me: Coordinates, them: Coordinates) = this[me].inc() == this[them]
+    private fun Matrix<Byte>.findALlPaths(start: Coordinates): List<Route> {
+        fun search(route: Route): List<Route> {
+            val last = route.last()
+            if (get(last) == END) return listOf(route)
+            return getNeighbours(route.last())
+                .filter { neighbour ->
+                    isGoodNeighbour(last, neighbour)
+                }
+                .flatMap { neighbour ->
+                    search(route + neighbour)
+                }
+        }
+        return search(listOf(start))
     }
 
     private fun solve(input: List<String>): Long {
         val grid = Matrix(input.map { it.toList().map { (it.code - '0'.code).toByte() } })
         val (startCoordinates, endCoordinates) = grid.indices.partition { (x,y) -> grid[x,y] == START }
             .let { (startCoordinates, endCoordinates) -> startCoordinates to endCoordinates.filter { (x,y) -> grid[x,y] == END }}
-        TODO()
+        return startCoordinates
+            .map { grid.findALlPaths(it).distinctBy { it.last() } }
+            .sumOf { it.size }
+            .toLong()
     }
 
     @JvmStatic
