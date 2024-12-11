@@ -56,7 +56,7 @@ object solution {
         val (startCoordinates, endCoordinates) = grid.indices.partition { (x,y) -> grid[x,y] == START }
             .let { (startCoordinates, endCoordinates) -> startCoordinates to endCoordinates.filter { (x,y) -> grid[x,y] == END }}
         return startCoordinates
-            .map { grid.findALlPaths(it).distinctBy { it.last() } }
+            .map { grid.findALlPaths(it) }
             .sumOf { it.size }
             .toLong()
     }
