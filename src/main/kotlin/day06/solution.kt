@@ -35,7 +35,7 @@ object solution {
     private fun solve(input: List<String>): Int {
         val grid = Matrix(input.map(String::toList))
         val start = findStartPosition(grid)
-        fun isNotOnEdge(coords: Pair<Int, Int>) = coords.let { (x, y) -> !(x == 0 || y == 0 || x == grid.maxX || y == grid.maxY) }
+        fun isNotOnEdge(coords: Coordinates) = coords.let { (x, y) -> !(x == 0 || y == 0 || x == grid.maxX || y == grid.maxY) }
         val distanceTraveled = vectorSequence.runningFold(start) { (x, y), vector ->
             grid.getIteratorFromVectorWithIndex(x, y, vector)
                 .asSequence()
