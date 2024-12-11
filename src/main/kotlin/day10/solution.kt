@@ -1,14 +1,9 @@
 package day10
 
 import utils.*
-import utils.CoordinatesUtil.x
-import utils.CoordinatesUtil.y
 
-<<<<<<< HEAD
-=======
-typealias Route = List<Coordinates>
+typealias Route<T> = List<Matrix<T>.LocalCoordinates>
 
->>>>>>> 228dcaf (day 10 part 1)
 object solution {
     private val example1 = """
         0123
@@ -32,15 +27,14 @@ object solution {
 
     private val cardinalDirections = Vector2D.Companion.cardinal.all
 
-    private fun <T> Matrix<T>.getNeighbours(coords: Coordinates) = cardinalDirections
-        .map { (x,y) -> coords.x + x to coords.y + y }
-        .filter { (x,y) -> getOrNull(x, y) != null }
-    private fun Matrix<Byte>.isGoodNeighbour(me: Coordinates, them: Coordinates) = this[me].inc() == this[them]
-    private fun Matrix<Byte>.findALlPaths(start: Coordinates): List<Route> {
-        fun search(route: Route): List<Route> {
+    private fun <T> Matrix<T>.LocalCoordinates.getNeighbours() = cardinalDirections
+        .mapNotNull { vector -> this + vector }
+    private fun Matrix<Byte>.isGoodNeighbour(me: Matrix<Byte>.LocalCoordinates, them: Matrix<Byte>.LocalCoordinates) = this[me].inc() == this[them]
+    private fun Matrix<Byte>.findAllPaths(start: Matrix<Byte>.LocalCoordinates): List<Route<Byte>> {
+        fun search(route: Route<Byte>): List<Route<Byte>> {
             val last = route.last()
             if (get(last) == END) return listOf(route)
-            return getNeighbours(route.last())
+            return route.last().getNeighbours()
                 .filter { neighbour ->
                     isGoodNeighbour(last, neighbour)
                 }
@@ -53,10 +47,10 @@ object solution {
 
     private fun solve(input: List<String>): Long {
         val grid = Matrix(input.map { it.toList().map { (it.code - '0'.code).toByte() } })
-        val (startCoordinates, endCoordinates) = grid.indices.partition { (x,y) -> grid[x,y] == START }
-            .let { (startCoordinates, endCoordinates) -> startCoordinates to endCoordinates.filter { (x,y) -> grid[x,y] == END }}
+        val (startCoordinates, _) = grid.indices.partition { coords -> grid[coords] == START }
+            .let { (startCoordinates, endCoordinates) -> startCoordinates to endCoordinates.filter { coords -> grid[coords] == END }}
         return startCoordinates
-            .map { grid.findALlPaths(it) }
+            .map { grid.findAllPaths(it) }
             .sumOf { it.size }
             .toLong()
     }

@@ -1,8 +1,6 @@
 package day11
 
 import utils.*
-import utils.CoordinatesUtil.x
-import utils.CoordinatesUtil.y
 
 private typealias Stone = Long
 

@@ -26,10 +26,10 @@ MXMXAXMASX
     private fun solve(input: List<String>): Int {
         val matrix = Matrix(input.map(String::toCharArray).map(CharArray::toList))
         return matrix.indices
-            .filter { (x,y) -> matrix.getOrNull(x,y) == 'A' }
-            .count { (x, y) ->
+            .filter { coords -> matrix.get(coords) == 'A' }
+            .count { coords ->
                 allVectors.count { vectors ->
-                    matrix.associateView(x,y, vectors).values.toList() == MS
+                    matrix.associateView(coords, vectors).values.toList() == MS
                 } == 2
             }
     }

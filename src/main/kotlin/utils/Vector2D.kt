@@ -1,5 +1,8 @@
 package utils
 
+/**
+ * A 2D Vector that describes a direction scalar, that can be applied to a [Matrix]
+ */
 data class Vector2D(val x: Int, val y: Int) {
 
     operator fun not() = Vector2D(-x, -y)
@@ -24,5 +27,3 @@ data class Vector2D(val x: Int, val y: Int) {
         }
     }
 }
-
-fun Vector2D.asCoordinates(): Coordinates = this.x to this.y

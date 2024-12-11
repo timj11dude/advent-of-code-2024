@@ -1,12 +1,6 @@
 package day08
 
-import utils.Coordinates
-import utils.Matrix
-import utils.getPuzzleInput
-import utils.CoordinatesUtil.minus
-import utils.CoordinatesUtil.plus
-import utils.CoordinatesUtil.x
-import utils.CoordinatesUtil.y
+import utils.*
 
 object solution {
     private val example1 = """
@@ -36,27 +30,28 @@ object solution {
         ..........
     """.trimIndent()
 
-    private fun List<Coordinates>.locateAnteNodes(maxX: Int, maxY: Int): List<Coordinates> = flatMap { primary ->
+    private fun <T> List<Matrix<T>.LocalCoordinates>.locateAnteNodes(): List<Matrix<T>.LocalCoordinates> = flatMap { primary ->
         minus(primary).flatMap { secondary ->
-            (secondary - primary).let { delta ->
+            (secondary.minus(primary)).let { delta ->
                 generateSequence { delta }
-                    .runningFold(primary) { acc, d -> acc + d }
-                    .takeWhile { it.x in 0..maxX && it.y in 0..maxY }
+                    .runningFold<Vector2D, Matrix<T>.LocalCoordinates?>(primary) { acc, d -> acc?.plus(d) }
+                    .takeWhile { it != null }
+                    .filterNotNull()
             }
         }
-    }.filter { it.x in 0..maxX && it.y in 0..maxY }
+    }
 
     /**
      * Given a list of coords, return a count of distinct coords.
      */
-    private fun List<Coordinates>.distinctLocationsCount(): Int = distinct().count()
+    private fun <T> List<Matrix<T>.LocalCoordinates>.distinctLocationsCount(): Int = distinct().count()
 
     private fun solve(input: List<String>): Int {
         val inputList = input.map(String::toList)
         val grid = Matrix(inputList)
         val types = inputList.flatten().distinct().filter { it.isLetterOrDigit() }
         return types.flatMap { type ->
-            grid.indices.filter { (x, y) -> grid[x, y] == type }.locateAnteNodes(grid.maxX, grid.maxY)
+            grid.indices.filter { coords -> grid[coords] == type }.locateAnteNodes()
         }.distinctLocationsCount()
     }
 
