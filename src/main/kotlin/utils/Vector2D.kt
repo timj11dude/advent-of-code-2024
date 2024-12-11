@@ -23,3 +23,5 @@ data class Vector2D(val x: Int, val y: Int) {
         }
     }
 }
+
+fun Vector2D.asCoordinates(): Coordinates = this.x to this.y

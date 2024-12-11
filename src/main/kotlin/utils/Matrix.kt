@@ -1,17 +1,25 @@
 package utils
 
+import utils.CoordinatesUtil.x
+import utils.CoordinatesUtil.y
+
 /**
  * Basic matrix holder, with convenience methods
  */
 data class Matrix<T>(private val _matrix: List<List<T>>) {
 
-    val indices get() = _matrix.indices.flatMap { y -> _matrix.first().indices.map { x -> x to y } }
+    val indices: List<Coordinates> get() = _matrix.indices.flatMap { y -> _matrix.first().indices.map { x -> x to y } }
     val maxX by lazy { _matrix.first().size - 1 }
     val maxY by lazy { _matrix.size - 1 }
 
     operator fun get(x: Int, y: Int) = _matrix[y][x]
-    fun getOrNull(x: Int, y: Int) = _matrix.getOrNull(y)?.getOrNull(x)
+    operator fun get(coordinates: Coordinates) = this[coordinates.x, coordinates.y]
+    fun getOrNull(x: Int, y: Int): T? = _matrix.getOrNull(y)?.getOrNull(x)
     operator fun contains(item: T) = _matrix.any { row -> row.contains(item) }
+
+    fun prettyPrint() {
+        _matrix.joinToString("\n") { row -> row.joinToString("") }
+    }
 }
 
 /**
@@ -29,7 +37,7 @@ fun <T> Matrix<T>.getIteratorFromVector(_x: Int, _y: Int, vector2D: Vector2D): I
     }
 }
 
-fun <T> Matrix<T>.getIteratorFromVectorWithIndex(_x: Int, _y: Int, vector2D: Vector2D): Iterator<Pair<Pair<Int,Int>,T>> = iterator {
+fun <T> Matrix<T>.getIteratorFromVectorWithIndex(_x: Int, _y: Int, vector2D: Vector2D): Iterator<Pair<Coordinates,T>> = iterator {
     var x = _x
     var y = _y
     var r = getOrNull(x,y)

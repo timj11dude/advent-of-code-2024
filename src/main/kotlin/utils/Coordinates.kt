@@ -11,4 +11,5 @@ object CoordinatesUtil {
     operator fun Coordinates.plus(other: Coordinates) = x + other.x to y + other.y
     operator fun Coordinates.minus(other: Coordinates) = x - other.x to y - other.y
     operator fun Coordinates.times(multiplier: Int) = x * multiplier to y * multiplier
+    fun Coordinates.asVector2D() = Vector2D(x, y)
 }
