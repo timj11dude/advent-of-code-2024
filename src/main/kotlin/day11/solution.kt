@@ -1,6 +1,7 @@
 package day11
 
 import utils.*
+import kotlin.math.pow
 
 private typealias Stone = Long
 
@@ -11,16 +12,32 @@ object solution {
 
     private const val STONE_MULTIPLIER = 2024
 
-    private fun stoneUpdate(stone: Stone): List<Stone> = when {
-        stone == 0L -> listOf(1L)
-        (stone.toString(10).length % 2) == 0 -> stone.toString(10).let { listOf(it.take(it.length/2).toLong(10), it.drop(it.length/2).toLong(10)) }
-        else -> listOf(stone * STONE_MULTIPLIER)
+    private fun Long.getNumberOfDigits(): Int {
+        var rem = this
+        var c = 0
+        while (rem > 0L) {
+            rem /= 10
+            c++
+        }
+        return c
+    }
+    private fun Long.hasEvenNumberOfDigits() = getNumberOfDigits() % 2 == 0
+    private fun Long.midPoint(): Int = (getNumberOfDigits() / 2)
+    private fun Long.split(): Sequence<Stone> = 10.0.pow (midPoint()).toInt().let { divisor -> sequenceOf(this / divisor, this % divisor) }
+
+    private val _cache = mutableMapOf<Stone, Sequence<Stone>>()
+    private fun stoneUpdate(stone: Stone): Sequence<Stone> = _cache.getOrPut(stone) {
+        when {
+            stone == 0L -> sequenceOf(1L)
+            stone.hasEvenNumberOfDigits() -> stone.split()
+            else -> sequenceOf(stone * STONE_MULTIPLIER)
+        }
     }
 
-    private fun solve(input: String): Int {
-        return generateSequence(input.split(" ").map { it.toLong() }) { prev ->
+    private fun solve(input: String): Long {
+        return generateSequence(input.split(" ").map { it.toLong() }.asSequence()) { prev ->
             prev.flatMap { stoneUpdate(it) }
-        }.take(26).last().size
+        }.take(76).last().fold(0L) { acc, c -> acc.inc() }
     }
 
     @JvmStatic
