@@ -12,6 +12,8 @@ value class Coordinates(private val _pair: Pair<Int, Int>) {
     constructor(x: Int, y: Int) : this(x to y)
     val x get() = _pair.first
     val y get() = _pair.second
+    operator fun component1() = x
+    operator fun component2() = y
 
     operator fun plus(vector: Vector2D): Coordinates = Coordinates(x + vector.x, y + vector.y)
     operator fun div(other: Coordinates): Vector2D = Vector2D(this.x / other.x, this.y / other.y)

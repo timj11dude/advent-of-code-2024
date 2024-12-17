@@ -20,6 +20,7 @@ data class Vector2D(val x: Int, val y: Int) {
     operator fun plus(other: Vector2D) = Vector2D(x + other.x, y + other.y)
     operator fun minus(other: Vector2D) = Vector2D(x - other.x, y - other.y)
     operator fun times(other: Vector2D) = Vector2D(x * other.x, y * other.y)
+    operator fun times(multiplier: Int) = Vector2D(x * multiplier, y * multiplier)
 
     val scalar: Scalar by lazy { sqrt(abs(x).toDouble().pow(2.0) + abs(y).toDouble().pow(2.0)) }
     val gradient: Double by lazy { y.toDouble() / x }
