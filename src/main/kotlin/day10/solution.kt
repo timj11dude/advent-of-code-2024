@@ -25,16 +25,12 @@ object solution {
     private const val START: Byte = 0
     private const val END: Byte = 9
 
-    private val cardinalDirections = Vector2D.Companion.cardinal.all
-
-    private fun <T> Matrix<T>.LocalCoordinates.getNeighbours() = cardinalDirections
-        .mapNotNull { vector -> this + vector }
     private fun Matrix<Byte>.isGoodNeighbour(me: Matrix<Byte>.LocalCoordinates, them: Matrix<Byte>.LocalCoordinates) = this[me].inc() == this[them]
     private fun Matrix<Byte>.findAllPaths(start: Matrix<Byte>.LocalCoordinates): List<Route<Byte>> {
         fun search(route: Route<Byte>): List<Route<Byte>> {
             val last = route.last()
             if (get(last) == END) return listOf(route)
-            return route.last().getNeighbours()
+            return route.last().getCardinalNeighbours()
                 .filter { neighbour ->
                     isGoodNeighbour(last, neighbour)
                 }

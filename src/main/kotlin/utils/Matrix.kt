@@ -55,7 +55,10 @@ data class Matrix<T>(private val _matrix: List<List<T>>) {
 /**
  * On [this] Matrix, given a set of start coordinates and vector, returns an iterator for all values within bounds.
  */
-fun <T> Matrix<T>.getIteratorFromVectorWithIndex(startCoordinates: Matrix<T>.LocalCoordinates, vector: Vector2D): Iterator<Pair<Matrix<T>.LocalCoordinates,T>> = iterator {
+fun <T> Matrix<T>.getIteratorFromVectorWithIndex(
+    startCoordinates: Matrix<T>.LocalCoordinates,
+    vector: Vector2D
+): Iterator<Pair<Matrix<T>.LocalCoordinates, T>> = iterator {
     yield(startCoordinates to get(startCoordinates))
     var nextCoordinates = startCoordinates + vector
     while (nextCoordinates != null) {
@@ -67,7 +70,8 @@ fun <T> Matrix<T>.getIteratorFromVectorWithIndex(startCoordinates: Matrix<T>.Loc
 /**
  * On [this] Matrix, given a set of [startCoordinates] and [vector], returns an iterator for all coordinates and values within bounds.
  */
-fun <T> Matrix<T>.getIteratorFromVector(startCoordinates: Matrix<T>.LocalCoordinates, vector: Vector2D): Iterator<T> = getIteratorFromVectorWithIndex(startCoordinates, vector).asSequence().map { it.second }.iterator()
+fun <T> Matrix<T>.getIteratorFromVector(startCoordinates: Matrix<T>.LocalCoordinates, vector: Vector2D): Iterator<T> =
+    getIteratorFromVectorWithIndex(startCoordinates, vector).asSequence().map { it.second }.iterator()
 
 /**
  * Associates each [view] item to the [T] in [this] Matrix
@@ -83,4 +87,8 @@ fun <T> Matrix<T>.associateView(coordinates: Matrix<T>.LocalCoordinates, view: L
 /**
  * Produces a vector from [this] to [other]
  */
-operator fun <T> Matrix<T>.LocalCoordinates.minus(other: Matrix<T>.LocalCoordinates): Vector2D = Vector2D(other.x - x, other.y - y)
+operator fun <T> Matrix<T>.LocalCoordinates.minus(other: Matrix<T>.LocalCoordinates): Vector2D =
+    Vector2D(other.x - x, other.y - y)
+
+fun <T> Matrix<T>.LocalCoordinates.getCardinalNeighbours() = Vector2D.Companion.cardinal.all
+    .mapNotNull { vector -> this + vector }
