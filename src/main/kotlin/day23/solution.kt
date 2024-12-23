@@ -50,29 +50,28 @@ object solution {
     context(Map<Id,Set<Id>>)
     private fun Set<Id>.findCommonIds(): Set<Id> = map { getValue(it) }.reduce { f, s -> f.intersect(s) }
 
-    private fun Nodes.findSubnets(size: Int): Set<Network> {
-        require(size>=0) { "Size must greater than or equal 0."}
-        if (size == 0) return emptySet()
-        if (size == 1) return keys.map(::setOf).toSet()
-        var n = size - 2
+    private fun Nodes.findLargestSubnets(): Network {
         var networks: Set<Network> = this.entries.flatMap { (k,v) -> v.map { setOf(k,it) } }.toSet()
-        while (n-- >= 1) {
-            networks = networks.flatMap { network ->
+        var doRepeat = true
+        do {
+            val new = networks.flatMap { network ->
                 network.findCommonIds().map { newId ->
                     network + newId
                 }
             }.toSet()
-        }
-        return networks
+            if(new.size == 1) doRepeat = false
+            networks = new
+        } while(doRepeat)
+        return networks.single()
     }
 
-    private fun solve(input: List<String>): Int {
+    private fun solve(input: List<String>): Any {
         val idPairs: List<Pair<Id,Id>> = input.flatMap { it.split("-").map(::Id).let { (f,s) -> listOf(f to s, s to f)  } }
         val nodes: Nodes = idPairs.fold(emptyMap()) { acc, pair ->
             acc + (pair.first to acc.getOrDefault(pair.first, emptySet()) + pair.second)
         }
-        val networks = nodes.findSubnets(3)
-        return networks.count { network -> network.any { it.id.startsWith('t') } }
+        val networks = nodes.findLargestSubnets()
+        return networks.sortedBy { it.id }.joinToString(",") { it.id }
     }
 
     @JvmStatic
