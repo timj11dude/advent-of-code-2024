@@ -16,24 +16,28 @@ object solution {
         bbrgwb
     """.trimIndent()
 
-    private val _cache = mutableMapOf<String, Long>()
-    private fun solvePattern(towels: List<String>, design: String): Long = when {
-        design.isEmpty() -> 1
-        else -> _cache.getOrPut(design) {
-            towels
-                .sumOf { towel ->
-                    when (val r = design.removePrefix(towel)) {
-                        design -> 0
-                        else -> solvePattern(towels, r)
+    private fun getPatternSolver(towels: List<String>): (String) -> Long {
+        val cache = mutableMapOf<String, Long>()
+        fun solve(design: String): Long = when {
+            design.isEmpty() -> 1
+            else -> cache.getOrPut(design) {
+                towels
+                    .sumOf { towel ->
+                        when (val r = design.removePrefix(towel)) {
+                            design -> 0
+                            else -> solve(r)
+                        }
                     }
-                }
+            }
         }
+        return ::solve
     }
 
-    private fun solve(input: List<String>): Int {
+    private fun solve(input: List<String>): Long {
         val (towels, designs) = input.let { it.first().split(",").map(String::trim) to it.drop(2) }
-        return designs.count { design ->
-            solvePattern(towels, design) > 0
+        val patternSolver = getPatternSolver(towels)
+        return designs.sumOf { design ->
+            patternSolver(design)
         }
     }
 
