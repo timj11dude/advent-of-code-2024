@@ -59,6 +59,26 @@ fun <T> Set<T>.combinations(size: Int): Set<Set<T>> {
     }
 }
 
+/**
+ * Splits a list into multiple lists, by a given predicate
+ */
+fun <E> List<E>.split(predicate: (E) -> Boolean): List<List<E>> {
+    return buildList {
+        var drop = 0
+        var hasMore = true
+        do {
+            val nextSegment = this@split.drop(drop).takeWhile { !predicate(it) }
+            if (nextSegment.isEmpty()) {
+                hasMore = false
+            }
+            else {
+                add(nextSegment)
+                drop += nextSegment.size + 1
+            }
+        } while(hasMore)
+    }
+}
+
 fun main() {
     listOf(1,2,3,4,5).asSequence().runningFoldPaired(0, false) { acc, c -> acc + c }.toList().let { println(it) }
     listOf(1).asSequence().runningFoldPaired(0) { acc, c -> acc + c }.toList().let { println(it) }
